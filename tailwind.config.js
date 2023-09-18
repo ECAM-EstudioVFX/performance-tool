@@ -8,11 +8,18 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        "dark-900": "#111", // Puedes personalizar este valor
+      },
+      textColor: {
+        "light-100": "#ddd", // Puedes personalizar este valor
+      },
+    },
   },
   darkMode: "class",
   corePlugins: {
     preflight: false,
   },
-  plugins: [nextui()],
+  plugins: [nextui(), require("@tailwindcss/forms")],
 };
