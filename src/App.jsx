@@ -2,7 +2,6 @@ import React, { useEffect, useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
 import Model from "./components/Model";
-import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 import * as THREE from "three";
 import { Spinner } from "@nextui-org/react";
@@ -15,10 +14,6 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   const separation = 20;
-
-  const { count } = useControls({
-    count: { value: 2, min: 1, max: 10, step: 1 },
-  });
 
   useEffect(() => {
     if (darkMode) {
@@ -42,6 +37,7 @@ function App() {
       className={`w-full relative ${
         darkMode ? "bg-dark-900 text-light-100" : ""
       }`}
+      style={{ height: "80vh" }}
     >
       <div className="flex items-center justify-between">
         <h1
@@ -75,7 +71,7 @@ function App() {
       </div>
       <input type="file" onChange={handleFileChange} accept=".glb, .gltf" />
       {showSpinner && (
-        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-white bg-opacity-50">
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center  bg-opacity-50">
           <Spinner color="warning" size="lg" />
         </div>
       )}
