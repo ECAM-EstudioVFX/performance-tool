@@ -15,6 +15,8 @@ function Model({ url, onLoad, position }) {
               key={name}
               object={node}
               material={materials[node.material.name]}
+              castShadow={true}
+              receiveShadow={true}
             />
           )
       )}
