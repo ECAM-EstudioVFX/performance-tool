@@ -1,7 +1,8 @@
 import React, { useEffect, useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { PerspectiveCamera, OrbitControls, Stage } from '@react-three/drei'
+import { PerspectiveCamera, OrbitControls, Center } from '@react-three/drei'
 import Model from './components/Model'
+import Ground from './components/Ground'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { Spinner } from '@nextui-org/react'
@@ -79,30 +80,31 @@ function App() {
       <Canvas
         style={{ border: darkMode ? '1px solid white' : '1px solid black' }}
         className='mt-5'
-        camera={{ position: [10, 0, 10], fov: 75, near: 0.1, far: 1000 }}
+        camera={{ position: [10, 10, 10], fov: 75, near: 0.1, far: 1000 }}
         onCreated={({ gl }) => {
           gl.shadowMap.enabled = true
           gl.shadowMap.type = THREE.PCFSoftShadowMap
         }}
       >
+        <color attach='background' args={['#303035']} />
         <Perf position='top-left' />
         <ambientLight intensity={0.5} />
         <directionalLight position={[0, 10, 5]} intensity={1} castShadow />
-        <PerspectiveCamera makeDefault position={[0, 0, 15]} />
+
         {/** Poder mover los elementos con las flechas */}
 
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-
+        <Ground />
         <Suspense fallback={null}>
           {modelURL && (
             <>
-              <Stage>
+              <Center>
                 <Model
                   url={modelURL}
                   onLoad={() => setShowSpinner(false)}
                   position={{ x: 10, y: 0, z: 0 }}
                 />
-              </Stage>
+              </Center>
             </>
           )}
         </Suspense>
