@@ -1,6 +1,11 @@
 import React, { useEffect, useState, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Center } from '@react-three/drei'
+import {
+  OrbitControls,
+  Center,
+  GizmoHelper,
+  GizmoViewport
+} from '@react-three/drei'
 import Model from './components/Model'
 import Lights from './components/Lights'
 import { Perf } from 'r3f-perf'
@@ -97,6 +102,16 @@ function App() {
           enableRotate={true}
           makeDefault
         />
+        <GizmoHelper
+          alignment='bottom-right' // widget alignment within scene
+          margin={[80, 80]} // widget margins (X, Y)
+        >
+          <GizmoViewport
+            axisColors={['red', 'green', 'blue']}
+            labelColor='black'
+          />
+          {/* alternative: <GizmoViewcube /> */}
+        </GizmoHelper>
         <Suspense fallback={null}>
           {modelURL && (
             <>
