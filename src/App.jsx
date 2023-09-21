@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Suspense, useRef } from 'react'
+import { useControls, folder, button } from 'leva'
 import { Canvas } from '@react-three/fiber'
 import {
   OrbitControls,
@@ -36,6 +37,8 @@ function App() {
       setModelURL(objectURL)
     }
   }
+
+  console.log('APP')
 
   return (
     <div
@@ -94,23 +97,19 @@ function App() {
         <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
 
-        {/** Poder mover los elementos con las flechas */}
         <Lights setBackColor={setBackColor} />
+
         <OrbitControls
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
           makeDefault
         />
-        <GizmoHelper
-          alignment='bottom-right' // widget alignment within scene
-          margin={[80, 80]} // widget margins (X, Y)
-        >
+        <GizmoHelper alignment='bottom-right' margin={[80, 80]}>
           <GizmoViewport
             axisColors={['red', 'green', 'blue']}
             labelColor='black'
           />
-          {/* alternative: <GizmoViewcube /> */}
         </GizmoHelper>
         <Suspense fallback={null}>
           {modelURL && (
