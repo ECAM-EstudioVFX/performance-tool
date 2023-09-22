@@ -8,8 +8,10 @@ function Lights({ setBackColor }) {
   const [lights, setLights] = useState([])
 
   function createLight() {
-    setLights((prevArray) => [...prevArray, Date.now()])
-    console.log('LIGHTS', lights)
+    setLights((prevArray) => {
+      const newArray = [...prevArray, `Directional${prevArray.length + 1}`]
+      return newArray
+    })
   }
 
   const { grid, backcolor } = useControls('Ground', {
@@ -30,14 +32,12 @@ function Lights({ setBackColor }) {
     })
   }))
 
-  console.log('LIGHTS', lights)
-
   return (
     <>
       {grid && <Ground />}
       <AmbientLight />
       {lights.map((name) => (
-        <DirectionalLight key={name} />
+        <DirectionalLight key={name} name={name} />
       ))}
     </>
   )

@@ -3,11 +3,13 @@ import { useHelper, TransformControls } from '@react-three/drei'
 import { DirectionalLightHelper } from 'three'
 import { useControls, folder } from 'leva'
 
-const DirectionalLight = memo(() => {
+const DirectionalLight = memo(({ name }) => {
   const refDirectionalLight = useRef()
 
+  console.log(name)
+
   const [controlsDirectional, set] = useControls(() => ({
-    DirectionalLight: folder({
+    [[`${name}`]]: folder({
       directional: true,
       colorDirectional: '#FFFFFF',
       intensityDirectional: {
@@ -63,6 +65,9 @@ const DirectionalLight = memo(() => {
         positionDirectional.y,
         positionDirectional.z
       ]}
+      visible={directional}
+      enabled={directional}
+      size={0.7}
     >
       <directionalLight
         position={[
