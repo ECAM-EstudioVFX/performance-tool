@@ -17,7 +17,8 @@ function Lights({ setBackColor }) {
           x: 0,
           y: 0,
           z: 0
-        }
+        },
+        active: true
       }
       const newArray = [...prevArray, newLight]
       return newArray
@@ -26,9 +27,12 @@ function Lights({ setBackColor }) {
 
   function removeDirectionalLight(name) {
     setLights((prevLights) => {
-      console.log('remove', name)
-      console.log(prevLights) // Debería mostrar el estado actual de 'lights'
-      return prevLights.filter((light) => light.name !== name)
+      return prevLights.map((light) => {
+        if (light.name === name) {
+          return { ...light, active: false }
+        }
+        return light
+      })
     })
   }
 
@@ -54,15 +58,18 @@ function Lights({ setBackColor }) {
     <>
       {grid && <Ground />}
       <AmbientLight />
-      {lights.map((lightObj) => (
-        <DirectionalLight
-          key={lightObj.code}
-          name={lightObj.name}
-          lightNumber={lightObj.lightNumber}
-          position={lightObj.position}
-          onRemove={() => removeDirectionalLight(lightObj.name)}
-        />
-      ))}
+      {lights.map(
+        (lightObj) =>
+          lightObj.active && (
+            <DirectionalLight
+              key={lightObj.code}
+              name={lightObj.name}
+              lightNumber={lightObj.lightNumber}
+              position={lightObj.position}
+              onRemove={() => removeDirectionalLight(lightObj.name)}
+            />
+          )
+      )}
     </>
   )
 }
