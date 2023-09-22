@@ -1,8 +1,14 @@
-import React, { useEffect, useState, Suspense } from 'react'
+import React, { useEffect, useState, Suspense, useRef } from 'react'
+import { useControls, folder, button } from 'leva'
 import { Canvas } from '@react-three/fiber'
-import { PerspectiveCamera, OrbitControls, Center } from '@react-three/drei'
+import {
+  OrbitControls,
+  Center,
+  GizmoHelper,
+  GizmoViewport
+} from '@react-three/drei'
 import Model from './components/Model'
-import Ground from './components/Ground'
+import Lights from './components/Lights'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { Spinner } from '@nextui-org/react'
@@ -13,8 +19,7 @@ function App() {
   const [modelURL, setModelURL] = useState(null)
   const [showSpinner, setShowSpinner] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
-
-  const separation = 20
+  const [backcolor, setBackColor] = useState('#303035')
 
   useEffect(() => {
     if (darkMode) {
@@ -78,6 +83,7 @@ function App() {
       )}
 
       <Canvas
+        shadows
         style={{ border: darkMode ? '1px solid white' : '1px solid black' }}
         className='mt-5'
         camera={{ position: [10, 10, 10], fov: 75, near: 0.1, far: 1000 }}
@@ -86,15 +92,23 @@ function App() {
           gl.shadowMap.type = THREE.PCFSoftShadowMap
         }}
       >
-        <color attach='background' args={['#303035']} />
+        <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[0, 10, 5]} intensity={1} castShadow />
 
-        {/** Poder mover los elementos con las flechas */}
+        <Lights setBackColor={setBackColor} />
 
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-        <Ground />
+        <OrbitControls
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          makeDefault
+        />
+        <GizmoHelper alignment='bottom-right' margin={[80, 80]}>
+          <GizmoViewport
+            axisColors={['red', 'green', 'blue']}
+            labelColor='black'
+          />
+        </GizmoHelper>
         <Suspense fallback={null}>
           {modelURL && (
             <>
