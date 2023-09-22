@@ -7,10 +7,28 @@ import AmbientLight from './AmbientLight'
 function Lights({ setBackColor }) {
   const [lights, setLights] = useState([])
 
-  function createLight() {
+  function createDirectionalLight() {
     setLights((prevArray) => {
-      const newArray = [...prevArray, `Directional${prevArray.length + 1}`]
+      const newLight = {
+        name: `Directional${prevArray.length + 1}`,
+        lightNumber: prevArray.length + 1,
+        code: Date.now(),
+        position: {
+          x: 0,
+          y: 0,
+          z: 0
+        }
+      }
+      const newArray = [...prevArray, newLight]
       return newArray
+    })
+  }
+
+  function removeDirectionalLight(name) {
+    setLights((prevLights) => {
+      console.log('remove', name)
+      console.log(prevLights) // Debería mostrar el estado actual de 'lights'
+      return prevLights.filter((light) => light.name !== name)
     })
   }
 
@@ -27,7 +45,7 @@ function Lights({ setBackColor }) {
   const [controls, set] = useControls(() => ({
     DirectionalLight: folder({
       Create: button(() => {
-        createLight()
+        createDirectionalLight()
       })
     })
   }))
@@ -36,8 +54,14 @@ function Lights({ setBackColor }) {
     <>
       {grid && <Ground />}
       <AmbientLight />
-      {lights.map((name) => (
-        <DirectionalLight key={name} name={name} />
+      {lights.map((lightObj) => (
+        <DirectionalLight
+          key={lightObj.code}
+          name={lightObj.name}
+          lightNumber={lightObj.lightNumber}
+          position={lightObj.position}
+          onRemove={() => removeDirectionalLight(lightObj.name)}
+        />
       ))}
     </>
   )

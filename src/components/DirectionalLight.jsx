@@ -1,9 +1,9 @@
 import { useRef, memo } from 'react'
 import { useHelper, TransformControls } from '@react-three/drei'
 import { DirectionalLightHelper } from 'three'
-import { useControls, folder } from 'leva'
+import { useControls, folder, button } from 'leva'
 
-const DirectionalLight = memo(({ name }) => {
+const DirectionalLight = memo(({ name, onRemove, position }) => {
   const refDirectionalLight = useRef()
 
   const [controlsDirectional, set] = useControls(() => ({
@@ -17,9 +17,9 @@ const DirectionalLight = memo(({ name }) => {
         max: 5
       },
       positionDirectional: {
-        x: 0,
-        y: -1,
-        z: 0
+        x: position.x,
+        y: position.y,
+        z: position.z
       },
       shadowBiasDirectional: {
         value: -0.0001,
@@ -27,7 +27,10 @@ const DirectionalLight = memo(({ name }) => {
         min: 0.0,
         max: -0.001
       },
-      helperDirectional: false
+      helperDirectional: false,
+      Remove: button(() => {
+        onRemove()
+      })
     })
   }))
 
@@ -47,9 +50,7 @@ const DirectionalLight = memo(({ name }) => {
   )
 
   const handlePositionChange = (event) => {
-    console.log('handlePositionChange')
     if (event.target && event.target.object) {
-      console.log('SET')
       set({
         positionDirectional: {
           x: event.target.object.position.x,
