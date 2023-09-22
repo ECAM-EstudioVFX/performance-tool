@@ -17,10 +17,8 @@ const DirectionalLight = memo(({ name }) => {
         max: 5
       },
       positionDirectional: {
-        x: refDirectionalLight.current
-          ? refDirectionalLight.current.position.x
-          : 0,
-        y: 0,
+        x: 0,
+        y: -1,
         z: 0
       },
       shadowBiasDirectional: {
@@ -48,9 +46,30 @@ const DirectionalLight = memo(({ name }) => {
     colorDirectional
   )
 
-  function handlePositionChange(event) {
-    console.log(refDirectionalLight.current)
+  /*   const handlePositionChange = (event) => {
+    console.log('handlePositionChange')
     if (event.target && event.target.object) {
+      if (
+        event.target.object.position.x !== positionDirectional.x ||
+        event.target.object.position.y !== positionDirectional.y ||
+        event.target.object.position.z !== positionDirectional.z
+      ) {
+        console.log('SET')
+        set({
+          positionDirectional: {
+            x: event.target.object.position.x,
+            y: event.target.object.position.y,
+            z: event.target.object.position.z
+          }
+        })
+      }
+    }
+  } */
+
+  const handlePositionChange = (event) => {
+    console.log('handlePositionChange')
+    if (event.target && event.target.object) {
+      console.log('SET')
       set({
         positionDirectional: {
           x: event.target.object.position.x,
@@ -64,6 +83,7 @@ const DirectionalLight = memo(({ name }) => {
   return (
     <TransformControls
       mode='translate'
+      //onChange={handlePositionChange}
       onMouseUp={handlePositionChange}
       position={[
         positionDirectional.x,
@@ -75,11 +95,12 @@ const DirectionalLight = memo(({ name }) => {
       size={0.7}
     >
       <directionalLight
-        position={[
+        /*  position={[
           positionDirectional.x,
           positionDirectional.y,
           positionDirectional.z
         ]}
+         */
         intensity={intensityDirectional}
         castShadow
         color={colorDirectional}
