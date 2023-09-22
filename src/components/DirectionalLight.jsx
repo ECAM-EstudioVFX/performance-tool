@@ -6,8 +6,6 @@ import { useControls, folder } from 'leva'
 const DirectionalLight = memo(({ name }) => {
   const refDirectionalLight = useRef()
 
-  console.log(name)
-
   const [controlsDirectional, set] = useControls(() => ({
     [[`${name}`]]: folder({
       directional: true,
@@ -18,7 +16,13 @@ const DirectionalLight = memo(({ name }) => {
         min: 0,
         max: 5
       },
-      positionDirectional: { x: 0, y: 0, z: 0 },
+      positionDirectional: {
+        x: refDirectionalLight.current
+          ? refDirectionalLight.current.position.x
+          : 0,
+        y: 0,
+        z: 0
+      },
       shadowBiasDirectional: {
         value: -0.0001,
         step: 0.0001,
@@ -45,6 +49,7 @@ const DirectionalLight = memo(({ name }) => {
   )
 
   function handlePositionChange(event) {
+    console.log(refDirectionalLight.current)
     if (event.target && event.target.object) {
       set({
         positionDirectional: {
@@ -59,7 +64,7 @@ const DirectionalLight = memo(({ name }) => {
   return (
     <TransformControls
       mode='translate'
-      onUpdate={handlePositionChange}
+      onMouseUp={handlePositionChange}
       position={[
         positionDirectional.x,
         positionDirectional.y,
