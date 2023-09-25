@@ -15,11 +15,13 @@ import { Spinner } from '@nextui-org/react'
 import { Button } from '@nextui-org/react'
 import './App.css'
 
+
 function App() {
   const [modelURL, setModelURL] = useState(null)
   const [showSpinner, setShowSpinner] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const [backcolor, setBackColor] = useState('#303035')
+  const [exportParams, setExportParams] = useState([])
 
   useEffect(() => {
     if (darkMode) {
@@ -29,12 +31,50 @@ function App() {
     }
   }, [darkMode])
 
+  const handleDownloadFile = () => {
+    if (exportParams.length > 1) {
+      const content = JSON.stringify(exportParams)
+      const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'archivo.txt';
+      a.style.display = 'none';
+  
+      document.body.appendChild(a);
+      a.click();
+  
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      alert('No hay parametros para exportar')
+    }
+  }
+
+  const handleUploadFile = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.readAsText(file);
+
+    reader.onload = function () {
+      console.log(JSON.parse(reader.result));
+    }
+
+    console.log(file)
+  }
+
   const handleFileChange = (event) => {
     setShowSpinner(true)
     const file = event.target.files[0]
     if (file) {
       const objectURL = URL.createObjectURL(file)
       setModelURL(objectURL)
+      setExportParams(() => {
+        const params = [...exportParams, { name: file.name }]
+        return params
+      })
     }
   }
 
@@ -76,6 +116,8 @@ function App() {
         </Button>
       </div>
       <input type='file' onChange={handleFileChange} accept='.glb, .gltf' />
+      <button onClick={handleDownloadFile}>Descargar Archivo</button>
+      <input type='file' onChange={handleUploadFile} />
       {showSpinner && (
         <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center  bg-opacity-50'>
           <Spinner color='warning' size='lg' />
