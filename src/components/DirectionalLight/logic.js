@@ -3,15 +3,25 @@ import { useControls, folder, button } from 'leva';
 import { useHelper } from '@react-three/drei';
 import { DirectionalLightHelper } from 'three';
 
-export const useDirectionalLightLogic = (name, onRemove, position) => {
+export const useDirectionalLightLogic = (
+  name,
+  directional,
+  colorDirectional,
+  intensityDirectional,
+  position,
+  shadowBiasDirectional,
+  helperDirectional,
+  active,
+  onRemove
+) => {
   const refDirectionalLight = useRef();
-  
+
   const [controlsDirectional, set] = useControls(() => ({
     [[`${name}`]]: folder({
-      directional: true,
-      colorDirectional: '#FFFFFF',
+      directional: directional,
+      colorDirectional: colorDirectional,
       intensityDirectional: {
-        value: 2,
+        value: intensityDirectional,
         step: 0.01,
         min: 0,
         max: 5
@@ -22,18 +32,18 @@ export const useDirectionalLightLogic = (name, onRemove, position) => {
         z: position.z
       },
       shadowBiasDirectional: {
-        value: -0.0001,
+        value: shadowBiasDirectional,
         step: 0.0001,
         min: 0.0,
         max: -0.001
       },
-      helperDirectional: false,
+      helperDirectional: helperDirectional,
       Remove: button(() => {
         onRemove();
       })
     })
   }));
-  
+
   const handlePositionChange = (event) => {
     if (event.target && event.target.object) {
       set({

@@ -1,32 +1,14 @@
-import { Html } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
 import { button, useControls } from "leva";
 import { useEffect, useState } from "react";
-import * as THREE from "three";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient("https://wklqkcdefwiwfxiogqfy.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrbHFrY2RlZndpd2Z4aW9ncWZ5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5NTY0NDM3NiwiZXhwIjoyMDExMjIwMzc2fQ.W-_7Alkq4rX1rXrsMIxgSMTKZxxqZ0pTIARBBg3ynm4");
+//const supabase = createClient("https://wklqkcdefwiwfxiogqfy.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrbHFrY2RlZndpd2Z4aW9ncWZ5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5NTY0NDM3NiwiZXhwIjoyMDExMjIwMzc2fQ.W-_7Alkq4rX1rXrsMIxgSMTKZxxqZ0pTIARBBg3ynm4");
 
-export default function ExporterImporter({ modelName }) {
+export default function ExporterImporter({ modelName, directionalLights }) {
 
-    const [exportParams] = useState({
-        model: { name: modelName },
-        data: [],
-    })
+    const [exportParams, setExportParams] = useState([])
 
-    const { scene } = useThree()
-
-    const types = {
-        'Mesh': THREE.Mesh,
-        'Group': THREE.Group,
-        'Object3D': THREE.Object3D,
-        'Scene': THREE.Scene,
-        'AmbientLight': THREE.AmbientLight,
-        'DirectionalLight': THREE.DirectionalLight,
-    }
-
-    const handleDownloadFile = () => {
-        exportParams.data = scene.children
+    const handleDownloadFile = (modelName, directionalLights) => {    
         const content = JSON.stringify(exportParams)
         const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
         const url = URL.createObjectURL(blob);
@@ -51,12 +33,7 @@ export default function ExporterImporter({ modelName }) {
 
         reader.onload = function () {
             const result = JSON.parse(reader.result)
-            console.log(result)
         }
-    }
-
-    function createChildren() {
-
     }
 
     const [controls, set] = useControls(() => ({
@@ -72,8 +49,15 @@ export default function ExporterImporter({ modelName }) {
     }))
 
     useEffect(() => {
-        console.log(scene.children)
-    }, [exportParams])
+        setExportParams(() => {
+            return {
+                modelName,
+                lights: {
+                    directionalLights
+                }
+            }
+        });
+    }, [modelName, directionalLights])
 
     return (
         <></>

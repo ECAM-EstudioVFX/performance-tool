@@ -4,20 +4,25 @@ import Ground from './Ground'
 import DirectionalLight from './DirectionalLight/DirectionalLight'
 import AmbientLight from './AmbientLight'
 
-function Lights({ setBackColor }) {
-  const [lights, setLights] = useState([])
+function Lights({ setBackColor, directionalLights, setDirectionalLights, }) {
+  
 
   function createDirectionalLight() {
-    setLights((prevArray) => {
+    setDirectionalLights((prevArray) => {
       const newLight = {
+        code: Date.now(),
         name: `Directional${prevArray.length + 1}`,
         lightNumber: prevArray.length + 1,
-        code: Date.now(),
+        directional: true,
+        colorDirectional: "#ffffff",
+        intensityDirectional: 2,
         position: {
           x: 0,
           y: 0,
           z: 0
         },
+        shadowBiasDirectional: -0.001,
+        helperDirectional: false,
         active: true
       }
       const newArray = [...prevArray, newLight]
@@ -26,7 +31,7 @@ function Lights({ setBackColor }) {
   }
 
   function removeDirectionalLight(name) {
-    setLights((prevLights) => {
+    setDirectionalLights((prevLights) => {
       return prevLights.map((light) => {
         if (light.name === name) {
           return { ...light, active: false }
@@ -58,14 +63,20 @@ function Lights({ setBackColor }) {
     <>
       {grid && <Ground />}
       <AmbientLight />
-      {lights.map(
+      {directionalLights.map(
         (lightObj) =>
           lightObj.active && (
             <DirectionalLight
               key={lightObj.code}
               name={lightObj.name}
               lightNumber={lightObj.lightNumber}
+              directional={lightObj.directional}
+              colorDirectional={lightObj.colorDirectional}
+              intensityDirectional={lightObj.intensityDirectional}
               position={lightObj.position}
+              shadowBiasDirectional={lightObj.shadowBiasDirectional}
+              helperDirectional={lightObj.helperDirectional}
+              active={lightObj.active}
               onRemove={() => removeDirectionalLight(lightObj.name)}
             />
           )

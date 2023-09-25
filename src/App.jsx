@@ -23,6 +23,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [backcolor, setBackColor] = useState('#303035')
 
+  const [directionalLights, setDirectionalLights] = useState([])
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark')
@@ -99,9 +101,9 @@ function App() {
         <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
 
-        <ExporterImporter modelName={modelName} />
+        <ExporterImporter modelName={modelName} directionalLights={directionalLights} />
 
-        <Lights setBackColor={setBackColor} />
+        <Lights directionalLights={directionalLights} setDirectionalLights={setDirectionalLights} setBackColor={setBackColor} />
 
         <OrbitControls
           enablePan={true}

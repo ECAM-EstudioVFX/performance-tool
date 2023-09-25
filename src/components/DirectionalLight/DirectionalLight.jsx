@@ -2,36 +2,27 @@ import React, { memo } from 'react'
 import { TransformControls } from '@react-three/drei'
 import { useDirectionalLightLogic } from './logic'
 
-const DirectionalLight = memo(({ name, onRemove, position }) => {
-  const { refDirectionalLight, controlsDirectional, handlePositionChange } =
-    useDirectionalLightLogic(name, onRemove, position)
-
-  const {
-    directional,
-    colorDirectional,
-    intensityDirectional,
-    positionDirectional,
-    shadowBiasDirectional
-  } = controlsDirectional
+const DirectionalLight = (({name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove}) => {
+  const { refDirectionalLight, controlsDirectional: c, handlePositionChange } = useDirectionalLightLogic(name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove)
 
   return (
     <TransformControls
       mode='translate'
       onMouseUp={handlePositionChange}
       position={[
-        positionDirectional.x,
-        positionDirectional.y,
-        positionDirectional.z
+        c.positionDirectional.x,
+        c.positionDirectional.y,
+        c.positionDirectional.z
       ]}
-      visible={directional}
-      enabled={directional}
+      visible={c.directional}
+      enabled={c.directional}
       size={0.7}
     >
       <directionalLight
-        intensity={intensityDirectional}
+        intensity={c.intensityDirectional}
         castShadow
-        color={colorDirectional}
-        shadow-bias={shadowBiasDirectional}
+        color={c.colorDirectional}
+        shadow-bias={c.shadowBiasDirectional}
         ref={refDirectionalLight}
       />
     </TransformControls>
