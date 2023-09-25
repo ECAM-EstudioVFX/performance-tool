@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense, useRef } from 'react'
-import { useControls, folder, button } from 'leva'
+import { useControls, folder, button, Leva } from 'leva'
 import { Canvas } from '@react-three/fiber'
 import {
   OrbitControls,
@@ -31,7 +31,7 @@ function App() {
     } else {
       document.documentElement.classList.remove('dark')
     }
-  }, [darkMode])
+  }, [darkMode, directionalLights])
 
   const handleFileChange = (event) => {
     setShowSpinner(true)
@@ -87,7 +87,7 @@ function App() {
           <Spinner color='warning' size='lg' />
         </div>
       )}
-
+      <Leva />
       <Canvas
         shadows
         style={{ border: darkMode ? '1px solid white' : '1px solid black' }}

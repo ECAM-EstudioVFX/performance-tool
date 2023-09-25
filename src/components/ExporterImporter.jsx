@@ -8,7 +8,7 @@ export default function ExporterImporter({ modelName, directionalLights }) {
 
     const [exportParams, setExportParams] = useState([])
 
-    const handleDownloadFile = (modelName, directionalLights) => {    
+    const handleDownloadFile = () => {
         const content = JSON.stringify(exportParams)
         const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
         const url = URL.createObjectURL(blob);

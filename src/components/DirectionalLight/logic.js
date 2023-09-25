@@ -3,17 +3,7 @@ import { useControls, folder, button } from 'leva';
 import { useHelper } from '@react-three/drei';
 import { DirectionalLightHelper } from 'three';
 
-export const useDirectionalLightLogic = (
-  name,
-  directional,
-  colorDirectional,
-  intensityDirectional,
-  position,
-  shadowBiasDirectional,
-  helperDirectional,
-  active,
-  onRemove
-) => {
+export const useDirectionalLightLogic = (name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove) => {
   const refDirectionalLight = useRef();
 
   const [controlsDirectional, set] = useControls(() => ({
