@@ -41,10 +41,11 @@ function App() {
     if (file) {
       const objectURL = URL.createObjectURL(file)
       const prevModelURL = [...modelURL]
-      prevModelURL.push({ name: file.name, url: objectURL, active: true })
+      prevModelURL.push({ name: file.name.substring(0, file.name.length - 4) + (prevModelURL.length + 1), url: objectURL, active: true })
       console.log(prevModelURL)
       setModelURL(prevModelURL)
     }
+    event.target.value = null
   }
 
   const emptyScene = () => {
@@ -143,7 +144,7 @@ function App() {
                     id={index}
                     url={model.url}
                     active={model.active}
-                    name={model.name.substring(0, model.name.length - 4)}
+                    name={model.name}
                     onLoad={() => setShowSpinner(false)}
                     position={{ x: 10, y: 0, z: 0 }}
                     setModelURL={setModelURL}
