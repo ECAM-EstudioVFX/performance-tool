@@ -17,6 +17,8 @@ import './App.css'
 import ExporterImporter from './components/ExporterImporter'
 
 function App() {
+  const refName = useRef()
+
   const [modelURL, setModelURL] = useState(null)
   const [modelName, setModelName] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
@@ -91,6 +93,7 @@ function App() {
         </Button>
       </div>
       <input type='file' onChange={handleFileChange} accept='.glb, .gltf' />
+      <input placeholder='Nombre de la escena' onChange={(e) => {setModelName(e.target.value)}} value={modelName}></input>
       
       {showSpinner && (
         <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center  bg-opacity-50'>
