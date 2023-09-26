@@ -43,6 +43,16 @@ function App() {
     }
   }
 
+  const emptyScene = () => {
+    setDirectionalLights([])
+    setModelName('')
+  }
+
+  const loadScene = (scene) => {
+    setDirectionalLights(scene.params.directionalLights)
+    setModelName(scene.params.modelName)
+  }
+
   return (
     <div
       className={`w-full relative ${
@@ -88,6 +98,7 @@ function App() {
         </div>
       )}
       <Leva />
+      <ExporterImporter modelName={modelName} directionalLights={directionalLights} loadScene={loadScene} emptyScene={emptyScene}/>
       <Canvas
         shadows
         style={{ border: darkMode ? '1px solid white' : '1px solid black' }}
@@ -101,7 +112,7 @@ function App() {
         <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
 
-        <ExporterImporter modelName={modelName} directionalLights={directionalLights} />
+        
 
         <Lights directionalLights={directionalLights} setDirectionalLights={setDirectionalLights} setBackColor={setBackColor} />
 

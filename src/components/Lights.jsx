@@ -63,7 +63,7 @@ function Lights({ setBackColor, directionalLights, setDirectionalLights, }) {
     <>
       {grid && <Ground />}
       <AmbientLight />
-      {directionalLights.map(
+      {directionalLights.length > 0 && directionalLights.map(
         (lightObj) =>
           lightObj.active && (
             <DirectionalLight
@@ -78,6 +78,8 @@ function Lights({ setBackColor, directionalLights, setDirectionalLights, }) {
               helperDirectional={lightObj.helperDirectional}
               active={lightObj.active}
               onRemove={() => removeDirectionalLight(lightObj.name)}
+              directionalLights={directionalLights}
+              setDirectionalLights={setDirectionalLights}
             />
           )
       )}

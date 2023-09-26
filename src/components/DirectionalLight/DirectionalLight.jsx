@@ -2,8 +2,8 @@ import React, { memo } from 'react'
 import { TransformControls } from '@react-three/drei'
 import { useDirectionalLightLogic } from './logic'
 
-const DirectionalLight = (({name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove}) => {
-  const { refDirectionalLight, controlsDirectional: c, handlePositionChange } = useDirectionalLightLogic(name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove)
+const DirectionalLight = (({name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove, directionalLights, setDirectionalLights}) => {
+  const { refDirectionalLight, controlsDirectional: c, handlePositionChange } = useDirectionalLightLogic(name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove, directionalLights, setDirectionalLights)
 
   return (
     <TransformControls
