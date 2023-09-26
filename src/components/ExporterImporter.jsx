@@ -7,7 +7,11 @@ export default function ExporterImporter({ modelName, directionalLights, loadSce
 
     const [exportParams, setExportParams] = useState(null)
 
+    const [loading, setLoading] = useState(false)
+    const [exporting, setExporting] = useState(false)
+
     const handleDownloadFile = async () => {
+        setExporting(true)
         const exportParams = {
             modelName: modelName,
             directionalLights: directionalLights
@@ -19,14 +23,19 @@ export default function ExporterImporter({ modelName, directionalLights, loadSce
                 { params: exportParams, date: new Date(), time: new Date().toLocaleTimeString() },
             ])
             .select()
+        setTimeout(() => {
+            setExporting(false)
+        }, 2000);
     }
 
     const handleUploadFile = async (event) => {
+        setLoading(true)
         let { data: scenes, error } = await supabase
             .from('scenes')
             .select('*')
             .order('id', { ascending: true })
         setExportParams(scenes)
+        setLoading(false)
     }
 
     return (
@@ -37,33 +46,64 @@ export default function ExporterImporter({ modelName, directionalLights, loadSce
             zIndex: '999',
         }}>
             <button onClick={() => handleDownloadFile()}>exportar</button>
-            <button onClick={() => handleUploadFile()}>importar</button>
-            {exportParams && <div style={{
+            {exporting && <div style={{
                 position: 'fixed',
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 backgroundColor: 'white',
                 padding: '10px',
-            }}>
-                <span style={{
-                    position: 'absolute',
-                    top: 0,
-                    right: '10px',
-                    fontSize: '20px',
-                    cursor: 'pointer',
-                }}
-                onClick={() => setExportParams(null)}
-                >X</span>
-                <h2>Importar</h2>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontWeight: 'bold',
-                    fontSize: '15px',
-                    height: '30px',
-                    padding: '0 10px',
+            }}>EXPORTANDO...</div>
+            }
+
+
+            <button onClick={() => handleUploadFile()}>importar</button>
+            {loading ? <div style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'white',
+                padding: '10px',
+            }}><img src="https://i.gifer.com/origin/34/34338d26023e5515f6cc8969aa027bca.gif" width={50} height={50}></img></div> : exportParams && <div
+                style={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '10px',
                 }}>
+                <span
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: '10px',
+                        fontSize: '20px',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => setExportParams(null)}
+                >X</span>
+                <span
+                    style={{
+                        position: 'absolute',
+                        top: '10px',
+                        left: '10px',
+                        fontSize: '20px',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => handleUploadFile()}
+                ><img src="https://cdn-icons-png.flaticon.com/512/2805/2805355.png" width={20}></img></span>
+                <h2>Importar</h2>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        fontWeight: 'bold',
+                        fontSize: '15px',
+                        height: '30px',
+                        padding: '0 10px',
+                    }}>
                     <div>id</div>
                     <div>nombre</div>
                     <div>fecha</div>
