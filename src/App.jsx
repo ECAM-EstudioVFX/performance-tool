@@ -19,7 +19,7 @@ import ExporterImporter from './components/ExporterImporter'
 function App() {
   const refName = useRef()
 
-  const [modelURL, setModelURL] = useState(null)
+  const [modelURL, setModelURL] = useState([])
   const [modelName, setModelName] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
@@ -36,12 +36,14 @@ function App() {
   }, [darkMode, directionalLights])
 
   const handleFileChange = (event) => {
-    setShowSpinner(true)
+    //setShowSpinner(true)
     const file = event.target.files[0]
     if (file) {
       const objectURL = URL.createObjectURL(file)
-      setModelURL(objectURL)
-      setModelName(file.name)
+      const prevModelURL = [...modelURL]
+      prevModelURL.push({ name: file.name, url: objectURL, active: true })
+      console.log(prevModelURL)
+      setModelURL(prevModelURL)
     }
   }
 
@@ -57,9 +59,8 @@ function App() {
 
   return (
     <div
-      className={`w-full relative ${
-        darkMode ? 'bg-dark-900 text-light-100' : ''
-      }`}
+      className={`w-full relative ${darkMode ? 'bg-dark-900 text-light-100' : ''
+        }`}
       style={{ height: '80vh' }}
     >
       <div className='flex items-center justify-between'>
@@ -93,15 +94,15 @@ function App() {
         </Button>
       </div>
       <input type='file' onChange={handleFileChange} accept='.glb, .gltf' />
-      <input placeholder='Nombre de la escena' onChange={(e) => {setModelName(e.target.value)}} value={modelName}></input>
-      
+      <input placeholder='Nombre de la escena' onChange={(e) => { setModelName(e.target.value) }} value={modelName}></input>
+
       {showSpinner && (
         <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center  bg-opacity-50'>
           <Spinner color='warning' size='lg' />
         </div>
       )}
       <Leva />
-      <ExporterImporter modelName={modelName} directionalLights={directionalLights} loadScene={loadScene} emptyScene={emptyScene}/>
+      <ExporterImporter modelName={modelName} directionalLights={directionalLights} loadScene={loadScene} emptyScene={emptyScene} />
       <Canvas
         shadows
         style={{ border: darkMode ? '1px solid white' : '1px solid black' }}
@@ -115,7 +116,7 @@ function App() {
         <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
 
-        
+
 
         <Lights directionalLights={directionalLights} setDirectionalLights={setDirectionalLights} setBackColor={setBackColor} />
 
@@ -135,11 +136,20 @@ function App() {
           {modelURL && (
             <>
               <Center>
-                <Model
-                  url={modelURL}
-                  onLoad={() => setShowSpinner(false)}
-                  position={{ x: 10, y: 0, z: 0 }}
-                />
+                {modelURL.length > 0 && modelURL.map((model, index) => 
+                  model.active && (
+                    <Model
+                    key={index}
+                    id={index}
+                    url={model.url}
+                    active={model.active}
+                    name={model.name.substring(0, model.name.length - 4)}
+                    onLoad={() => setShowSpinner(false)}
+                    position={{ x: 10, y: 0, z: 0 }}
+                    setModelURL={setModelURL}
+                  />
+                  )
+                )}
               </Center>
             </>
           )}
