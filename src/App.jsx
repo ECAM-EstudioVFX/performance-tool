@@ -42,7 +42,6 @@ function App() {
       const objectURL = URL.createObjectURL(file)
       const prevModelURL = [...modelURL]
       prevModelURL.push({ name: file.name.substring(0, file.name.length - 4) + (prevModelURL.length + 1), url: objectURL, active: true })
-      console.log(prevModelURL)
       setModelURL(prevModelURL)
     }
     event.target.value = null
