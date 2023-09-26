@@ -11,6 +11,10 @@ export default function ExporterImporter({ modelName, directionalLights, loadSce
     const [exporting, setExporting] = useState(false)
 
     const handleDownloadFile = async () => {
+        if (modelName === '') {
+            alert('Tienes que ponerle un nombre a la escena')
+            return
+        }
         setExporting(true)
         const exportParams = {
             modelName: modelName,
