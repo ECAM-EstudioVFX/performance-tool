@@ -23,9 +23,9 @@ export const useDirectionalLightLogic = (name, directional, colorDirectional, in
       },
       shadowBiasDirectional: {
         value: shadowBiasDirectional,
-        step: 0.0001,
-        min: 0.0,
-        max: -0.001
+        step: 0.00001,
+        min: -0.001,
+        max: 0.0
     
       },
       helperDirectional: helperDirectional,
