@@ -17,18 +17,21 @@ function Model({ url, name, id, setModelURL }) {
     })
   }
 
-  
+
 
 
   const [controls, set] = useControls(() => ({
     [`${name}`]: folder({
+      transformControls: false,
       Delete: button(() => { deleteModel(id) }),
     })
   }))
 
 
   return (
-    <TransformControls>
+    <TransformControls
+      enabled={controls.transformControls}
+    >
       <primitive object={gltf.scene} />
     </TransformControls>
   )
