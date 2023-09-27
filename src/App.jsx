@@ -21,7 +21,6 @@ function App() {
 
   const [modelURL, setModelURL] = useState([])
   const [modelName, setModelName] = useState('')
-  const [showSpinner, setShowSpinner] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const [backcolor, setBackColor] = useState('#303035')
 
@@ -36,7 +35,6 @@ function App() {
   }, [darkMode, directionalLights])
 
   const handleFileChange = (event) => {
-    //setShowSpinner(true)
     const file = event.target.files[0]
     if (file) {
       const objectURL = URL.createObjectURL(file)
@@ -96,11 +94,6 @@ function App() {
       <input type='file' onChange={handleFileChange} accept='.glb, .gltf' />
       <input placeholder='Nombre de la escena' onChange={(e) => { setModelName(e.target.value) }} value={modelName}></input>
 
-      {showSpinner && (
-        <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center  bg-opacity-50'>
-          <Spinner color='warning' size='lg' />
-        </div>
-      )}
       <Leva />
       <ExporterImporter modelName={modelName} directionalLights={directionalLights} loadScene={loadScene} emptyScene={emptyScene} />
       <Canvas
@@ -136,18 +129,15 @@ function App() {
           {modelURL && (
             <>
               <Center>
-                {modelURL.length > 0 && modelURL.map((model, index) => 
+                {modelURL.length > 0 && modelURL.map((model, index) =>
                   model.active && (
                     <Model
-                    key={index}
-                    id={index}
-                    url={model.url}
-                    active={model.active}
-                    name={model.name}
-                    onLoad={() => setShowSpinner(false)}
-                    position={{ x: 10, y: 0, z: 0 }}
-                    setModelURL={setModelURL}
-                  />
+                      key={index}
+                      id={index}
+                      url={model.url}
+                      name={model.name}
+                      setModelURL={setModelURL}
+                    />
                   )
                 )}
               </Center>

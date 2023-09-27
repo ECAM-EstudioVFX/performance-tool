@@ -3,9 +3,8 @@ import { TransformControls, useGLTF } from '@react-three/drei'
 import propTypes from 'prop-types'
 import { button, folder, useControls } from 'leva'
 
-function Model({ url, onLoad, position, name, id, setModelURL, active }) {
-  const meshRef = useRef()
-  const { nodes, materials } = useGLTF(url)
+function Model({ url, name, id, setModelURL }) {
+  const gltf = useGLTF(url)
 
   const deleteModel = (id) => {
     setModelURL((prevURL) => {
@@ -18,6 +17,8 @@ function Model({ url, onLoad, position, name, id, setModelURL, active }) {
     })
   }
 
+  
+
 
   const [controls, set] = useControls(() => ({
     [`${name}`]: folder({
@@ -25,22 +26,10 @@ function Model({ url, onLoad, position, name, id, setModelURL, active }) {
     })
   }))
 
+
   return (
     <TransformControls>
-      <group ref={meshRef} onAfterRender={onLoad()}>
-        {Object.entries(nodes).map(
-          ([name, node]) =>
-            node.type === 'Mesh' && (
-              <primitive
-                key={name}
-                object={node}
-                material={materials[node.material.name]}
-                castShadow={true}
-                receiveShadow={true}
-              />
-            )
-        )}
-      </group>
+      <primitive object={gltf.scene} />
     </TransformControls>
   )
 }
@@ -48,7 +37,6 @@ function Model({ url, onLoad, position, name, id, setModelURL, active }) {
 Model.propTypes = {
   url: propTypes.string.isRequired,
   onLoad: propTypes.func,
-  position: propTypes.object.isRequired
 }
 
 export default Model
