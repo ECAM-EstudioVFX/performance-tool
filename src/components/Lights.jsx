@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useControls, folder, button } from 'leva'
 import Ground from './Ground'
 import DirectionalLight from './DirectionalLight/DirectionalLight'
-import AmbientLight from './AmbientLight'
+import AmbientLight from './AmbientLight/AmbientLight'
 
 function Lights({ setBackColor, directionalLights, setDirectionalLights, }) {
   
