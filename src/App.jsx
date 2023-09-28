@@ -1,24 +1,16 @@
-import React, { useEffect, useState, Suspense, useRef } from 'react'
-import { useControls, folder, button, Leva } from 'leva'
+import React, { useEffect, useState } from 'react'
+import { Leva } from 'leva'
 import { Canvas } from '@react-three/fiber'
-import {
-  OrbitControls,
-  Center,
-  GizmoHelper,
-  GizmoViewport
-} from '@react-three/drei'
-import Model from './components/Model'
+import { OrbitControls, GizmoHelper, GizmoViewport } from '@react-three/drei'
 import Lights from './components/Lights'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
-import { Spinner } from '@nextui-org/react'
 import { Button } from '@nextui-org/react'
 import './App.css'
 import ExporterImporter from './components/ExporterImporter'
+import Models from './components/Models'
 
 function App() {
-  const refName = useRef()
-
   const [modelURL, setModelURL] = useState([])
   const [modelName, setModelName] = useState('')
   const [darkMode, setDarkMode] = useState(false)
@@ -34,7 +26,7 @@ function App() {
     }
   }, [darkMode, directionalLights])
 
-  const handleFileChange = (event) => {
+  const handleAddFile = (event) => {
     const file = event.target.files[0]
     if (file) {
       const objectURL = URL.createObjectURL(file)
@@ -91,8 +83,8 @@ function App() {
           )}
         </Button>
       </div>
-      <input type='file' onChange={handleFileChange} accept='.glb, .gltf' />
-      <input placeholder='Nombre de la escena' onChange={(e) => { setModelName(e.target.value) }} value={modelName}></input>
+      <input type='file' onChange={handleAddFile} accept='.glb, .gltf' name='model'/>
+      <input placeholder='Nombre de la escena' onChange={(e) => { setModelName(e.target.value) }} value={modelName} name='sceneName'></input>
 
       <Leva />
       <ExporterImporter modelName={modelName} directionalLights={directionalLights} loadScene={loadScene} emptyScene={emptyScene} />
@@ -108,42 +100,20 @@ function App() {
       >
         <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
-
-
-
         <Lights directionalLights={directionalLights} setDirectionalLights={setDirectionalLights} setBackColor={setBackColor} />
-
         <OrbitControls
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
           makeDefault
-        />
+        /> 
         <GizmoHelper alignment='bottom-right' margin={[80, 80]}>
           <GizmoViewport
             axisColors={['red', 'green', 'blue']}
             labelColor='black'
           />
         </GizmoHelper>
-        <Suspense fallback={null}>
-          {modelURL && (
-            <>
-              <Center>
-                {modelURL.length > 0 && modelURL.map((model, index) =>
-                  model.active && (
-                    <Model
-                      key={index}
-                      id={index}
-                      url={model.url}
-                      name={model.name}
-                      setModelURL={setModelURL}
-                    />
-                  )
-                )}
-              </Center>
-            </>
-          )}
-        </Suspense>
+        <Models modelURL={modelURL} setModelURL={setModelURL}/>
       </Canvas>
     </div>
   )

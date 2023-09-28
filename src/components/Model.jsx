@@ -1,10 +1,30 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { TransformControls, useGLTF } from '@react-three/drei'
-import propTypes from 'prop-types'
+import { useThree } from '@react-three/fiber';
 import { button, folder, useControls } from 'leva'
 
 function Model({ url, name, id, setModelURL }) {
+  const [model, setModel] = useState(null); 
+  const modelRef = useRef()
   const gltf = useGLTF(url)
+  const { scene } = useThree();
+
+  useEffect(() => {
+    const clonedScene = gltf.scene.clone();
+    setModel(clonedScene);
+  }, [gltf.scene]);
+
+  useEffect(() => {
+    if (model) {
+      modelRef.current = model;
+      scene.add(model);
+    }
+    return () => {
+      if (model) {
+        scene.remove(model);
+      }
+    };
+  }, [model, scene]); 
 
   const deleteModel = (id) => {
     setModelURL((prevURL) => {
@@ -17,29 +37,21 @@ function Model({ url, name, id, setModelURL }) {
     })
   }
 
-
-
-
   const [controls, set] = useControls(() => ({
     [`${name}`]: folder({
       transformControls: false,
+     
       Delete: button(() => { deleteModel(id) }),
     })
   }))
 
-
   return (
-    <TransformControls
-      enabled={controls.transformControls}
-    >
-      <primitive object={gltf.scene} />
-    </TransformControls>
-  )
-}
-
-Model.propTypes = {
-  url: propTypes.string.isRequired,
-  onLoad: propTypes.func,
+    model ? ( 
+      <TransformControls enabled={controls.transformControls} object={model}>
+        <primitive object={model} />
+      </TransformControls>
+    ) : null
+  );
 }
 
 export default Model
