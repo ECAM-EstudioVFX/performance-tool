@@ -1,33 +1,45 @@
 import React, { useEffect, useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import { TransformControls, useGLTF } from '@react-three/drei'
 import propTypes from 'prop-types'
+import { button, folder, useControls } from 'leva'
 
-function Model({ url, onLoad, position }) {
-  const meshRef = useRef()
-  const { nodes, materials } = useGLTF(url)
+function Model({ url, name, id, setModelURL }) {
+  const gltf = useGLTF(url)
+
+  const deleteModel = (id) => {
+    setModelURL((prevURL) => {
+      return prevURL.map((url, index) => {
+        if (index === id) {
+          return { ...url, active: false }
+        }
+        return url
+      })
+    })
+  }
+
+
+
+
+  const [controls, set] = useControls(() => ({
+    [`${name}`]: folder({
+      transformControls: false,
+      Delete: button(() => { deleteModel(id) }),
+    })
+  }))
+
 
   return (
-    <group ref={meshRef} onAfterRender={onLoad()}>
-      {Object.entries(nodes).map(
-        ([name, node]) =>
-          node.type === 'Mesh' && (
-            <primitive
-              key={name}
-              object={node}
-              material={materials[node.material.name]}
-              castShadow={true}
-              receiveShadow={true}
-            />
-          )
-      )}
-    </group>
+    <TransformControls
+      enabled={controls.transformControls}
+    >
+      <primitive object={gltf.scene} />
+    </TransformControls>
   )
 }
 
 Model.propTypes = {
   url: propTypes.string.isRequired,
   onLoad: propTypes.func,
-  position: propTypes.object.isRequired
 }
 
 export default Model

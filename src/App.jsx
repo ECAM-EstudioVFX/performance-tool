@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense, useRef } from 'react'
-import { useControls, folder, button } from 'leva'
+import { useControls, folder, button, Leva } from 'leva'
 import { Canvas } from '@react-three/fiber'
 import {
   OrbitControls,
@@ -14,12 +14,17 @@ import * as THREE from 'three'
 import { Spinner } from '@nextui-org/react'
 import { Button } from '@nextui-org/react'
 import './App.css'
+import ExporterImporter from './components/ExporterImporter'
 
 function App() {
-  const [modelURL, setModelURL] = useState(null)
-  const [showSpinner, setShowSpinner] = useState(false)
+  const refName = useRef()
+
+  const [modelURL, setModelURL] = useState([])
+  const [modelName, setModelName] = useState('')
   const [darkMode, setDarkMode] = useState(false)
   const [backcolor, setBackColor] = useState('#303035')
+
+  const [directionalLights, setDirectionalLights] = useState([])
 
   useEffect(() => {
     if (darkMode) {
@@ -27,22 +32,33 @@ function App() {
     } else {
       document.documentElement.classList.remove('dark')
     }
-  }, [darkMode])
+  }, [darkMode, directionalLights])
 
   const handleFileChange = (event) => {
-    setShowSpinner(true)
     const file = event.target.files[0]
     if (file) {
       const objectURL = URL.createObjectURL(file)
-      setModelURL(objectURL)
+      const prevModelURL = [...modelURL]
+      prevModelURL.push({ name: file.name.substring(0, file.name.length - 4) + (prevModelURL.length + 1), url: objectURL, active: true })
+      setModelURL(prevModelURL)
     }
+    event.target.value = null
+  }
+
+  const emptyScene = () => {
+    setDirectionalLights([])
+    setModelName('')
+  }
+
+  const loadScene = (scene) => {
+    setDirectionalLights(scene.params.directionalLights)
+    setModelName(scene.params.modelName)
   }
 
   return (
     <div
-      className={`w-full relative ${
-        darkMode ? 'bg-dark-900 text-light-100' : ''
-      }`}
+      className={`w-full relative ${darkMode ? 'bg-dark-900 text-light-100' : ''
+        }`}
       style={{ height: '80vh' }}
     >
       <div className='flex items-center justify-between'>
@@ -76,12 +92,10 @@ function App() {
         </Button>
       </div>
       <input type='file' onChange={handleFileChange} accept='.glb, .gltf' />
-      {showSpinner && (
-        <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center  bg-opacity-50'>
-          <Spinner color='warning' size='lg' />
-        </div>
-      )}
+      <input placeholder='Nombre de la escena' onChange={(e) => { setModelName(e.target.value) }} value={modelName}></input>
 
+      <Leva />
+      <ExporterImporter modelName={modelName} directionalLights={directionalLights} loadScene={loadScene} emptyScene={emptyScene} />
       <Canvas
         shadows
         style={{ border: darkMode ? '1px solid white' : '1px solid black' }}
@@ -95,7 +109,9 @@ function App() {
         <color attach='background' args={[backcolor]} />
         <Perf position='top-left' />
 
-        <Lights setBackColor={setBackColor} />
+
+
+        <Lights directionalLights={directionalLights} setDirectionalLights={setDirectionalLights} setBackColor={setBackColor} />
 
         <OrbitControls
           enablePan={true}
@@ -113,11 +129,17 @@ function App() {
           {modelURL && (
             <>
               <Center>
-                <Model
-                  url={modelURL}
-                  onLoad={() => setShowSpinner(false)}
-                  position={{ x: 10, y: 0, z: 0 }}
-                />
+                {modelURL.length > 0 && modelURL.map((model, index) =>
+                  model.active && (
+                    <Model
+                      key={index}
+                      id={index}
+                      url={model.url}
+                      name={model.name}
+                      setModelURL={setModelURL}
+                    />
+                  )
+                )}
               </Center>
             </>
           )}

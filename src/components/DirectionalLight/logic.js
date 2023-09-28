@@ -1,20 +1,20 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useControls, folder, button } from 'leva';
 import { useHelper } from '@react-three/drei';
 import { DirectionalLightHelper } from 'three';
 
-export const useDirectionalLightLogic = (name, onRemove, position) => {
+export const useDirectionalLightLogic = (name, directional, colorDirectional, intensityDirectional, position, shadowBiasDirectional, helperDirectional, active, onRemove, directionalLights, setDirectionalLights) => {
   const refDirectionalLight = useRef();
-  
+
   const [controlsDirectional, set] = useControls(() => ({
     [[`${name}`]]: folder({
-      directional: true,
-      colorDirectional: '#FFFFFF',
+      directional: directional,
+      colorDirectional: colorDirectional,
       intensityDirectional: {
-        value: 2,
+        value: intensityDirectional,
         step: 0.01,
         min: 0,
-        max: 5
+        max: 5,
       },
       positionDirectional: {
         x: position.x,
@@ -22,18 +22,50 @@ export const useDirectionalLightLogic = (name, onRemove, position) => {
         z: position.z
       },
       shadowBiasDirectional: {
-        value: -0.0001,
-        step: 0.0001,
-        min: 0.0,
-        max: -0.001
+        value: shadowBiasDirectional,
+        step: 0.00001,
+        min: -0.001,
+        max: 0.0
+    
       },
-      helperDirectional: false,
+      helperDirectional: helperDirectional,
       Remove: button(() => {
         onRemove();
       })
     })
   }));
-  
+
+  useEffect(() => {
+    const newDirectionalLights = directionalLights.map((light) => {
+      if (light.name === name) {
+        light.directional = controlsDirectional.directional;
+        light.colorDirectional = controlsDirectional.colorDirectional;
+        light.intensityDirectional = controlsDirectional.intensityDirectional;
+        light.position = controlsDirectional.positionDirectional;
+        light.shadowBiasDirectional = controlsDirectional.shadowBiasDirectional;
+        light.helperDirectional = controlsDirectional.helperDirectional;
+      }
+      return light;
+    });
+
+    setDirectionalLights(newDirectionalLights);
+  }, [controlsDirectional])
+
+  useEffect(() => {
+    set({
+      directional: directional,
+      colorDirectional: colorDirectional,
+      intensityDirectional: intensityDirectional,
+      positionDirectional: {
+        x: position.x,
+        y: position.y,
+        z: position.z
+      },
+      shadowBiasDirectional: shadowBiasDirectional,
+      helperDirectional: helperDirectional,
+    });
+  }, []);
+
   const handlePositionChange = (event) => {
     if (event.target && event.target.object) {
       set({
